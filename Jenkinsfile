@@ -67,7 +67,38 @@ pipeline {
         }    
       }
 
-
+        stage('CREATE DOCKER IMAGE BACK') {
+            steps {
+                dir('DevOps_Project') {
+                    script {
+                        sh 'docker build -t hassenahmadi/devopsbackend .'
+                        sh 'docker push hassenahmadi/devopsbackend'
+                    }
+                }
+            }
+        }
+        stage('CREATE DOCKER IMAGE FRONT') {
+            steps {
+                dir('DevOps_Project_Front') {
+                    script {
+                        sh 'docker build -t hassenahmadi/devopsfrontend .'
+                        sh 'docker push hassenahmadi/devopsfrontend'
+                        
+                    }
+                }
+            }
+        }
+        
+       stage('DEPLOY APP') {
+            steps {
+                
+                script {
+                    sh 'docker-compose -f docker-compose.yml up -d' 
+                    sh 'docker-compose -f docker-compose.yml start'                       
+                }
+                
+            }
+        }
 }
 }
 
